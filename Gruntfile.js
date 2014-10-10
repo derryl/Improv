@@ -11,26 +11,32 @@ module.exports = function(grunt) {
             server: {
                 options: {
                     port: server_port,
-                    base: 'dist',
+                    base: 'example',
                     hostname: '*'
                 }
             }
         },
         
         clean: {
-            dist: ['dist']
+            build:   ['build'],
+            example: ['example']
         },
         
         copy: {
-            src: {
-                src: ['**/*'],
+            example: {
+                src: [
+                    'Improv.js',
+                    'example/index.html',
+                    'example/test_stylesheet.css'
+                ],
                 cwd: 'src/',
-                dest: 'dist',
-                expand: true
+                dest: 'example',
+                expand: true,
+                flatten: true
             },
-            examples: {
-                src: ['example/index.html','example/test_stylesheet.css'],
-                dest: 'dist',
+            src: {
+                src: ['src/Improv.js'],
+                dest: 'build',
                 expand: true,
                 flatten: true
             }
@@ -41,11 +47,11 @@ module.exports = function(grunt) {
                 files: ['Gruntfile.js']
             },
             src: {
-                files: ['src/**/*','example/**/*'],
+                files: ['src/**/*'],
                 tasks: ['build']
             },
-            dist: {
-                files: ['dist/**/*'], 
+            build: {
+                files: ['example/**/*'], 
                 options: { livereload: true }
             }
         },
@@ -53,7 +59,7 @@ module.exports = function(grunt) {
         less: {
             master: {
                 files: {
-                    'dist/example.css': 'example/example.less'
+                    'example/base.css': 'src/example/base.less'
                 }
             }  
         },
@@ -62,30 +68,30 @@ module.exports = function(grunt) {
         concat: {
             // js_vendor: {
             //     src: [
-            //         'dist/scripts/vendor.js',
+            //         'build/scripts/vendor.js',
             //         'src/scripts/vendor/modernizr.custom.js',
             //         'src/scripts/vendor/classie.js',
             //         'src/scripts/vendor/uiMorphingButton_fixed.js'
             //     ],
-            //     dest: 'dist/scripts/vendor.js'
+            //     dest: 'build/scripts/vendor.js'
             // },
             // js_everything: {
             //     src: [
-            //         'dist/scripts/vendor.js',
-            //         'dist/scripts/morph.js',
-            //         'dist/scripts/main.js'
+            //         'build/scripts/vendor.js',
+            //         'build/scripts/morph.js',
+            //         'build/scripts/main.js'
             //     ],
-            //     dest: 'dist/app.js'
+            //     dest: 'build/app.js'
             // }
         },
         
         uglify: {
             options: {
-                mangle: false
+                mangle: true
             },
-            dist: {
+            build: {
                 files: {
-                    'dist/app.js': ['dist/app.js']
+                    'build/Improv.min.js': ['src/Improv.js']
                 }
             }
         },
@@ -110,11 +116,11 @@ module.exports = function(grunt) {
     // grunt.registerTask('build', ['sass', 'includes', 'copy']);
     
     grunt.registerTask('build', [
-        // 'clean:dist',
+        // 'clean:build',
         'clean',
         'copy',
-        'less'
-        // 'uglify',
+        'less',
+        'uglify',
     ]);
     
     grunt.registerTask('default', [
